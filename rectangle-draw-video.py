@@ -6,14 +6,14 @@ import cv2
 import shutil
 
 # Video path and model
-m3u8_url = 'https://api.forzify.com/eliteserien/playlist.m3u8/6526:2971000:3020000/Manifest.m3u8'
-output_video_path = '/home/mehdi/AIproducer/Export-Video/video_export-main/object_detection/output.avi'
-model = YOLO('/home/mehdi/AIproducer/YOLO-Object-Detection/YOLO-Model/yolov8m-football.pt')
+m3u8_url = 'https://api.forzify.com/eliteserien/playlist.m3u8/6719:3224000:3236000/Manifest.m3u8'
+output_video_path = '/home/mehdi/AIproducer/Export-Video/video_export-main/object_detection/output.mp4'
+model = YOLO('/home/mehdi/AIproducer/AI-Producer/aiproducer-new_feature_smart_crop/classification_service/src/SC11.pt')
 skip_n_frames = 1  # process every skip_n_frames frame
 frame_count = 0
 
 # Define class names (replace with actual names if available)
-class_names = ['ball', 'class_1', 'player', 'class_3', 'class_4']
+class_names = ['player', 'ball', 'logo']
 
 # Download the m3u8 file using ffmpeg
 temp_video_path = 'temp_video.mp4'
@@ -54,7 +54,10 @@ try:
         results = model(frame_path)
         # Assuming results is a tensor of shape [number_of_boxes, 6]
         # where each row represents [x1, y1, x2, y2, confidence, class]
-        boxes = results[0].cpu().numpy()
+        for result in results:
+           boxes = result.boxes.data  # or however you access the boxes
+
+        
 
         # Iterate through each box and draw it on the frame
         for box in boxes:
